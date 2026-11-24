@@ -1,0 +1,20 @@
+# Settings that are not listed here keep the defaults of the Supabase CLI.
+project_id = "unitrack"
+
+[db]
+major_version = 17
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[realtime]
+enabled = false
+
+[auth]
+site_url = "http://localhost:5173"
+minimum_password_length = 8
+
+[auth.email]
+enabled = true
+enable_confirmations = false

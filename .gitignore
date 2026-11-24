@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.local
+.env
+.env.*
+!.env.example
+*.log
+supabase/.temp/
+supabase/.branches/
+notes/
+.claude/
+CLAUDE.md

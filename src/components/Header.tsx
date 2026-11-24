@@ -1,0 +1,57 @@
+import { Link, NavLink } from 'react-router'
+import { useAuth } from '../auth/AuthContext'
+import { useLanguage } from '../messages/LanguageContext'
+
+export function Header() {
+  const { t, language, setLanguage } = useLanguage()
+  const { profile, signOut } = useAuth()
+
+  return (
+    <header className="masthead">
+      <div className="masthead-top">
+        <Link to="/" className="brand">
+          UniTrack
+        </Link>
+        <div className="masthead-tools">
+          <div className="language-switch" role="group" aria-label={t.nav.language}>
+            {(['fr', 'en'] as const).map((code) => (
+              <button
+                key={code}
+                type="button"
+                lang={code}
+                aria-pressed={language === code}
+                onClick={() => setLanguage(code)}
+              >
+                {code.toUpperCase()}
+              </button>
+            ))}
+          </div>
+          {profile && (
+            <>
+              <span className="muted">{profile.full_name}</span>
+              <button type="button" className="link-button" onClick={signOut}>
+                {t.nav.signOut}
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
+      {profile?.role === 'admin' && (
+        <nav className="main-nav">
+          <NavLink to="/">{t.nav.planning}</NavLink>
+          <NavLink to="/projects">{t.nav.projects}</NavLink>
+          <NavLink to="/people">{t.nav.people}</NavLink>
+          <NavLink to="/setup">{t.nav.setup}</NavLink>
+          <NavLink to="/availability">{t.nav.availability}</NavLink>
+        </nav>
+      )}
+      {profile?.role === 'supervisor' && (
+        <nav className="main-nav">
+          <NavLink to="/">{t.nav.projects}</NavLink>
+          <NavLink to="/availability">{t.nav.availability}</NavLink>
+        </nav>
+      )}
+    </header>
+  )
+}

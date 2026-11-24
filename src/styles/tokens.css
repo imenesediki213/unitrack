@@ -1,0 +1,38 @@
+@font-face {
+  font-family: 'Source Serif 4';
+  src: url('/fonts/source-serif-4.woff2') format('woff2');
+  font-weight: 200 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Sans 3';
+  src: url('/fonts/source-sans-3.woff2') format('woff2');
+  font-weight: 200 900;
+  font-display: swap;
+}
+
+:root {
+  --paper: #faf6ec;
+  --paper-raised: #fffdf7;
+  --paper-shaded: #f1ead9;
+  --rule: #d8cfb8;
+  --field-border: #8f866f;
+  --ink: #22262e;
+  --ink-soft: #5c5f66;
+  --blue: #1f3a5f;
+  --blue-pale: #e2e8f0;
+  --oxblood: #8c2f2b;
+  --oxblood-pale: #f5e1dc;
+  --green: #35603f;
+
+  --serif: 'Source Serif 4', Georgia, serif;
+  --sans: 'Source Sans 3', 'Segoe UI', sans-serif;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2.5rem;
+  --space-6: 4rem;
+}
