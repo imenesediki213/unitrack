@@ -5,6 +5,7 @@ import { Loading } from '../components/Loading'
 import { useAction, useLoad } from '../lib/hooks'
 import { useLanguage } from '../messages/LanguageContext'
 import { listProjects } from '../projects/api'
+import { supervisorTints } from '../projects/tints'
 import { findConflicts, generateSchedule, type GenerateResult } from '../scheduler'
 import {
   getSettings,
@@ -72,6 +73,7 @@ function PlanningEditor({ data, onSaved }: { data: PlanningData; onSaved: () => 
 
   const problem = useMemo(() => buildProblem(data), [data])
   const saved = useMemo(() => movablePlacements(data, problem), [data, problem])
+  const tints = useMemo(() => supervisorTints(data.projects), [data])
   const explainer = useMemo(() => createExplainer(data, t, language), [data, t, language])
 
   const [placements, setPlacements] = useState(saved)
@@ -178,6 +180,7 @@ function PlanningEditor({ data, onSaved }: { data: PlanningData; onSaved: () => 
       <div className="planning-layout">
         <PlanningBoard
           data={data}
+          tints={tints}
           fixed={problem.fixed}
           placements={placements}
           conflicts={conflicts}
@@ -192,6 +195,7 @@ function PlanningEditor({ data, onSaved }: { data: PlanningData; onSaved: () => 
             <h2>{t.planning.unscheduled}</h2>
             <WaitingList
               projects={data.projects}
+              tints={tints}
               placements={placements}
               selectedId={selectedId}
               onSelect={setSelectedId}

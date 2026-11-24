@@ -5,6 +5,8 @@ import { Card } from './Card'
 
 interface Props {
   projects: Project[]
+  /** Supervisor id -> colour of the card. */
+  tints: Map<string, string>
   placements: Placement[]
   selectedId: string | null
   onSelect: (projectId: string | null) => void
@@ -12,7 +14,8 @@ interface Props {
 }
 
 /** Approved projects without a slot. Dropping a card here takes it off the board. */
-export function WaitingList({ projects, placements, selectedId, onSelect, onRemove }: Props) {
+export function WaitingList(props: Props) {
+  const { projects, tints, placements, selectedId, onSelect, onRemove } = props
   const { t } = useLanguage()
   const placedIds = new Set(placements.map((placement) => placement.projectId))
   const approved = projects.filter((project) => project.status === 'approved')
@@ -36,6 +39,7 @@ export function WaitingList({ projects, placements, selectedId, onSelect, onRemo
         <Card
           key={project.id}
           project={project}
+          tint={tints.get(project.supervisor.id)}
           isSelected={selectedId === project.id}
           onSelect={onSelect}
         />

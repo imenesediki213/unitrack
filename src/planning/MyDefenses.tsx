@@ -4,6 +4,7 @@ import { useLoad } from '../lib/hooks'
 import type { Project } from '../lib/types'
 import { formatDay, formatTime } from '../messages/format'
 import { useLanguage } from '../messages/LanguageContext'
+import { supervisorTints } from '../projects/tints'
 import { listDefenses, listRooms, listSlots } from './api'
 
 /** The published defenses of a professor, in chronological order. */
@@ -13,6 +14,7 @@ export function MyDefenses({ projects }: { projects: Project[] }) {
 
   if (!schedule.data) return <Loading error={schedule.error} />
   const [defenses, slots, rooms] = schedule.data
+  const tints = supervisorTints(projects)
 
   // The slots are already sorted, so following them sorts the defenses.
   const rows = slots.flatMap((slot) =>
@@ -31,7 +33,10 @@ export function MyDefenses({ projects }: { projects: Project[] }) {
       {rows.length === 0 && <p className="muted">{t.defense.noneYet}</p>}
       <ul className="project-list">
         {rows.map(({ slot, room, project }) => (
-          <li key={project?.id ?? slot.id}>
+          <li
+            key={project?.id ?? slot.id}
+            className={project && tints.get(project.supervisor.id)}
+          >
             <p className="defense-when">
               {t.defense.when(
                 formatDay(language, slot.day),

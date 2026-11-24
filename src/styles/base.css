@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scrollbar-color: var(--rule) transparent;
+}
+
 body {
   margin: 0;
   background: var(--paper);
@@ -18,23 +22,24 @@ h3 {
   color: var(--blue);
   font-family: var(--serif);
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.15;
   text-wrap: balance;
 }
 
 h1 {
   margin-bottom: var(--space-4);
-  font-size: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+  letter-spacing: -0.015em;
 }
 
 h2 {
   margin-bottom: var(--space-3);
-  font-size: 1.375rem;
+  font-size: 1.5rem;
 }
 
 h3 {
   margin-bottom: var(--space-2);
-  font-size: 1.125rem;
+  font-size: 1.1875rem;
 }
 
 p {
@@ -51,7 +56,7 @@ ol {
 
 a {
   color: var(--blue);
-  text-underline-offset: 0.15em;
+  text-underline-offset: 0.2em;
 }
 
 :focus-visible {
@@ -79,16 +84,21 @@ textarea {
   color: inherit;
 }
 
-button {
-  padding: 0.4rem 0.9rem;
-  border: 1px solid var(--blue);
-  background: transparent;
+button,
+.button {
+  display: inline-block;
+  padding: 0.45rem 1.15rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--blue-pale);
   color: var(--blue);
+  text-decoration: none;
   cursor: pointer;
 }
 
-button:hover:not(:disabled) {
-  background: var(--blue-pale);
+button:hover:not(:disabled),
+.button:hover {
+  background: var(--rule);
 }
 
 button:disabled {
@@ -96,40 +106,55 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button.primary {
+button.primary,
+.button.primary {
   background: var(--blue);
-  color: var(--paper-raised);
+  color: var(--on-blue);
 }
 
-button.primary:hover:not(:disabled) {
-  background: #162b47;
+button.primary:hover:not(:disabled),
+.button.primary:hover {
+  background: var(--blue-strong);
 }
 
 button.danger {
-  border-color: var(--oxblood);
+  background: var(--oxblood-pale);
   color: var(--oxblood);
 }
 
 button.danger:hover:not(:disabled) {
-  background: var(--oxblood-pale);
+  background: var(--oxblood);
+  color: var(--paper);
 }
 
-button.link-button {
+button.link-button,
+button.link-button:hover:not(:disabled) {
   padding: 0;
-  border: 0;
+  border-radius: 0;
   background: none;
   text-decoration: underline;
-  text-underline-offset: 0.15em;
+  text-underline-offset: 0.2em;
 }
 
 input,
 select,
 textarea {
   width: 100%;
-  padding: 0.45rem 0.6rem;
+  padding: 0.5rem 0.85rem;
   border: 1px solid var(--field-border);
-  border-radius: 0;
+  border-radius: 0.9rem;
   background: var(--paper-raised);
+}
+
+input[type='file']::file-selector-button {
+  margin-right: var(--space-2);
+  padding: 0.25rem 0.8rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--blue-pale);
+  color: var(--blue);
+  font: inherit;
+  cursor: pointer;
 }
 
 label {
@@ -151,6 +176,15 @@ label > textarea {
   color: var(--ink-soft);
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .hint {
   font-size: 0.9375rem;
   font-weight: 400;
@@ -158,14 +192,21 @@ label > textarea {
 
 .error {
   padding: var(--space-2) var(--space-3);
-  border-left: 3px solid var(--oxblood);
+  border-radius: var(--leaf-shape);
   background: var(--oxblood-pale);
   color: var(--oxblood);
 }
 
 .narrow {
-  max-width: 26rem;
+  max-width: 29rem;
   margin: var(--space-4) auto 0;
+  padding: var(--space-5) clamp(1.5rem, 6vw, 3rem);
+  border-radius: var(--leaf-shape-large);
+  background: var(--paper-shaded);
+}
+
+.narrow > :last-child {
+  margin-bottom: 0;
 }
 
 .narrow-field {
@@ -176,7 +217,6 @@ label > textarea {
   color: var(--ink-soft);
   font-family: var(--serif);
   font-size: 1.125rem;
-  font-style: italic;
 }
 
 .stack {
@@ -205,8 +245,8 @@ label > textarea {
   max-width: 40rem;
   margin-bottom: var(--space-4);
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--rule);
-  background: var(--paper-raised);
+  border-radius: var(--leaf-shape);
+  background: var(--paper-shaded);
 }
 
 .panel > summary {
@@ -247,23 +287,74 @@ label > textarea {
 
 .ledger {
   width: 100%;
-  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 .ledger th,
 .ledger td {
-  padding: var(--space-2) var(--space-3) var(--space-2) 0;
-  border-bottom: 1px solid var(--rule);
+  padding: var(--space-2) var(--space-3);
   text-align: left;
 }
 
 .ledger th {
-  border-bottom: 2px solid var(--blue);
-  color: var(--blue);
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+.ledger tbody tr:nth-child(odd) {
+  background: var(--paper-shaded);
+}
+
+.ledger td:first-child {
+  border-radius: 0.25rem 0 0 1.375rem;
+}
+
+.ledger td:last-child {
+  border-radius: 0 1.375rem 1.375rem 0;
 }
 
 .ledger select {
   width: auto;
+}
+
+.card {
+  display: grid;
+  align-content: start;
+  gap: 0.15rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--leaf-shape);
+  background: var(--tint, var(--paper-shaded));
+  color: var(--tint-ink, var(--ink));
+  font-size: 0.875rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.card strong {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.card.conflict {
+  outline: 2px solid var(--oxblood);
+  background: var(--oxblood-pale);
+  color: var(--oxblood);
+}
+
+.card-tag {
+  justify-self: start;
+  padding: 0 0.55rem;
+  border-radius: 999px;
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.card.conflict .card-tag {
+  background: var(--oxblood);
+  color: var(--paper);
 }
 
 /* Masthead */
@@ -277,36 +368,52 @@ label > textarea {
 .masthead-top {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: var(--space-2) var(--space-4);
-  padding-bottom: var(--space-2);
-  border-bottom: 3px double var(--blue);
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   color: var(--blue);
   font-family: var(--serif);
   font-size: 1.75rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
   text-decoration: none;
+}
+
+.logo {
+  width: 2.6rem;
+  height: 2.6rem;
+}
+
+.logo-leaf {
+  transform-origin: 29px 20px;
+  transition: transform 400ms ease-out;
+}
+
+.brand:hover .logo-leaf {
+  transform: rotate(14deg);
 }
 
 .masthead-tools {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-1) var(--space-3);
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
 }
 
 .language-switch button {
-  padding: 0 0.3rem;
-  border: 0;
+  padding: 0.1rem 0.55rem;
+  background: none;
   color: var(--ink-soft);
 }
 
 .language-switch button[aria-pressed='true'] {
-  border-bottom: 2px solid var(--blue);
+  background: var(--blue-pale);
   color: var(--blue);
   font-weight: 600;
 }
@@ -314,34 +421,69 @@ label > textarea {
 .main-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0 var(--space-4);
-  border-bottom: 1px solid var(--rule);
+  gap: var(--space-1);
+  margin: var(--space-3) -0.9rem 0;
 }
 
 .main-nav a {
-  padding: var(--space-2) 0;
-  border-bottom: 2px solid transparent;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
   text-decoration: none;
 }
 
 .main-nav a:hover {
-  border-bottom-color: var(--rule);
+  background: var(--paper-shaded);
 }
 
 .main-nav a.active {
-  border-bottom-color: var(--blue);
+  background: var(--blue-pale);
   font-weight: 600;
 }
 
 /* Projects */
 
+.project-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(30rem, 100%), 1fr));
+  column-gap: var(--space-5);
+}
+
 .project-list > li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--space-3);
   padding: var(--space-3) 0;
-  border-top: 1px solid var(--rule);
+}
+
+.project-list > li > * {
+  grid-column: 2;
+}
+
+.project-list > li::before,
+.version::before {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 0 100% 0 100%;
+  background: color-mix(in oklab, var(--tint, var(--leaf)) 55%, var(--tint-ink, var(--leaf)));
+  content: '';
+}
+
+.project-list > li::before {
+  grid-row: 1;
+  align-self: center;
 }
 
 .project-list h2 {
-  margin-bottom: var(--space-1);
+  margin: 0;
+  font-size: 1.375rem;
+}
+
+.project-list h2 a {
+  text-decoration: none;
+}
+
+.project-list h2 a:hover {
+  text-decoration: underline;
 }
 
 .project-list p {
@@ -353,21 +495,47 @@ label > textarea {
 }
 
 .status-track {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2) var(--space-4);
+  max-width: 44rem;
   margin-bottom: var(--space-4);
 }
 
-.status-track li {
-  padding-top: var(--space-1);
-  border-top: 3px solid var(--rule);
+.status-track svg {
+  display: block;
+  width: 100%;
+}
+
+.status-track path,
+.status-track circle {
+  fill: none;
+  stroke: var(--field-border);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.status-track .reached path {
+  stroke: var(--leaf);
+}
+
+.status-track .reached .status-leaf {
+  fill: var(--leaf);
+}
+
+.status-track .reached circle {
+  fill: var(--sun);
+  stroke: var(--paper);
+}
+
+.status-track ol {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-1);
   color: var(--ink-soft);
+  line-height: 1.25;
+  text-align: center;
 }
 
 .status-track li.reached {
-  border-top-color: var(--blue);
-  color: var(--blue);
+  color: var(--green);
 }
 
 .status-track li[aria-current='step'] {
@@ -375,9 +543,10 @@ label > textarea {
 }
 
 .defense {
-  padding: var(--space-3) 0;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
+  max-width: 40rem;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--leaf-shape-large);
+  background: var(--blue-pale);
 }
 
 .defense p:last-child {
@@ -391,6 +560,10 @@ label > textarea {
 
 .defense-when::first-letter {
   text-transform: uppercase;
+}
+
+.defense button {
+  background: var(--paper-raised);
 }
 
 .team {
@@ -407,18 +580,34 @@ label > textarea {
   padding: var(--space-1) 0;
 }
 
+/* The versions hang from one stem, the newest on top. */
 .version {
-  padding: var(--space-3) 0 var(--space-3) var(--space-3);
-  border-top: 1px solid var(--rule);
-  border-left: 3px solid var(--rule);
+  position: relative;
+  margin-left: 0.6rem;
+  padding: 0 0 var(--space-4) var(--space-4);
+  border-left: 2px solid var(--rule);
 }
 
-.version-approved {
-  border-left-color: var(--green);
+.version:last-child {
+  border-left-color: transparent;
 }
 
-.version-changes_requested {
-  border-left-color: var(--oxblood);
+.version::before {
+  position: absolute;
+  top: 0.15rem;
+  left: -0.65rem;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 2.5px var(--field-border);
+}
+
+.version-approved::before {
+  background: var(--green);
+  box-shadow: none;
+}
+
+.version-changes_requested::before {
+  background: var(--oxblood);
+  box-shadow: none;
 }
 
 .version-heading {
@@ -441,8 +630,12 @@ label > textarea {
 }
 
 blockquote {
+  width: fit-content;
   max-width: 68ch;
   margin: 0 0 var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--leaf-shape);
+  background: var(--paper-shaded);
   font-family: var(--serif);
   white-space: pre-line;
 }
@@ -453,23 +646,25 @@ blockquote {
 .slot-choices {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2) var(--space-4);
+  gap: var(--space-2);
   margin-bottom: var(--space-4);
 }
 
 .slot-list li {
   display: flex;
   gap: var(--space-2);
-}
-
-.slot-choices {
-  gap: var(--space-2);
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  background: var(--paper-shaded);
 }
 
 .slot-choice {
   display: grid;
-  min-width: 8.5rem;
-  border-color: var(--field-border);
+  min-width: 9rem;
+  padding: 0.6rem 1rem;
+  border-radius: var(--leaf-shape);
+  background: var(--paper-shaded);
+  color: var(--ink);
   text-align: left;
 }
 
@@ -477,14 +672,11 @@ blockquote {
   font-size: 0.875rem;
 }
 
-.slot-choice[aria-pressed='true'] {
-  border-color: var(--blue);
-  background: var(--blue);
-  color: var(--paper-raised);
-}
-
+.slot-choice[aria-pressed='true'],
 .slot-choice[aria-pressed='true']:hover:not(:disabled) {
-  background: #162b47;
+  background: var(--tint);
+  box-shadow: inset 0 0 0 2px var(--green);
+  color: var(--tint-ink);
 }
 
 @media (max-width: 40rem) {
@@ -492,5 +684,25 @@ blockquote {
   .masthead {
     padding-left: var(--space-3);
     padding-right: var(--space-3);
+  }
+
+  .brand {
+    font-size: 1.375rem;
+  }
+
+  .masthead-tools {
+    column-gap: var(--space-2);
+  }
+
+  .status-track ol {
+    font-size: 0.875rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
   }
 }

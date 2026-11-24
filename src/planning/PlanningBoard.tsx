@@ -8,6 +8,8 @@ import { groupByDay } from './daySlots'
 
 interface Props {
   data: PlanningData
+  /** Supervisor id -> colour of the card. */
+  tints: Map<string, string>
   /** Past defenses. */
   fixed: Placement[]
   placements: Placement[]
@@ -21,7 +23,7 @@ interface Props {
 
 /** The grid: one row per slot, one column per room. */
 export function PlanningBoard(props: Props) {
-  const { data, fixed, placements, conflicts, selectedId, forbiddenCells } = props
+  const { data, tints, fixed, placements, conflicts, selectedId, forbiddenCells } = props
   const { t, language } = useLanguage()
   const [hoveredKey, setHoveredKey] = useState<string | null>(null)
 
@@ -62,6 +64,7 @@ export function PlanningBoard(props: Props) {
         {project && (
           <Card
             project={project}
+            tint={tints.get(project.supervisor.id)}
             isSelected={selectedId === project.id}
             hasConflict={conflictIds.has(project.id)}
             onSelect={past ? undefined : props.onSelect}

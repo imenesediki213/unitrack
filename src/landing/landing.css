@@ -1,0 +1,124 @@
+.hero {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(26rem, 100%), 1fr));
+  align-items: center;
+  gap: var(--space-5) var(--space-6);
+}
+
+.hero h1 {
+  max-width: 12ch;
+  font-size: clamp(2.5rem, 1.6rem + 4.5vw, 4.75rem);
+  line-height: 1.02;
+}
+
+.hero .tagline {
+  max-width: 36ch;
+  font-size: 1.25rem;
+}
+
+.puzzle {
+  padding: var(--space-4) clamp(1rem, 4vw, 2.5rem) var(--space-5);
+  border-radius: 1rem 7rem 1rem 7rem;
+  background: var(--paper-shaded);
+}
+
+/* The large corners would cut the text. */
+.puzzle h2 {
+  margin-right: var(--space-5);
+}
+
+.puzzle-message,
+.puzzle .hint,
+.puzzle > button {
+  margin: var(--space-2) 0 0 var(--space-5);
+}
+
+.puzzle-board {
+  width: 100%;
+  table-layout: fixed;
+  border-spacing: 0.4rem;
+}
+
+.puzzle-board th {
+  font-family: var(--serif);
+  font-weight: 400;
+  text-align: left;
+}
+
+.puzzle-board th:first-child {
+  width: 3.25rem;
+}
+
+.puzzle-board tbody th {
+  padding-top: 0.6rem;
+  vertical-align: top;
+}
+
+/* Gives the cells a height that their content can fill. */
+.puzzle-board td {
+  height: 6.25rem;
+  padding: 0;
+}
+
+.puzzle-board .card,
+.puzzle-cell {
+  width: 100%;
+  height: 100%;
+}
+
+.puzzle-board .card {
+  padding: 0.6rem;
+  hyphens: auto;
+}
+
+.puzzle-board .movable {
+  cursor: grab;
+}
+
+.puzzle-cell {
+  border: 2px dotted var(--field-border);
+  border-radius: var(--leaf-shape);
+  background: none;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+.puzzle-message p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.puzzle-conflict {
+  color: var(--oxblood);
+}
+
+.puzzle-solved {
+  color: var(--green);
+}
+
+.landing-roles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.landing-roles li {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--leaf-shape-large);
+  background: var(--tint);
+  color: var(--tint-ink);
+}
+
+.landing-roles li:nth-child(even) {
+  border-radius: 3.5rem 0.5rem 3.5rem 0.5rem;
+}
+
+.landing-roles h2 {
+  margin-bottom: var(--space-1);
+  color: inherit;
+}
+
+.landing-roles p {
+  margin: 0;
+}

@@ -14,6 +14,7 @@ export const fr = {
     availability: 'Disponibilités',
     signOut: 'Se déconnecter',
     language: 'Langue',
+    nightMode: 'Mode nuit',
   },
   notFound: {
     title: 'Page introuvable',
@@ -34,6 +35,25 @@ export const fr = {
     pendingTitle: 'Compte en attente',
     pendingText:
       'Votre compte existe, mais le chef de département doit encore vous attribuer un rôle. Revenez plus tard.',
+  },
+  landing: {
+    title: 'Du premier rapport au jour de la soutenance.',
+    intro:
+      'UniTrack suit les projets de fin d’études d’un département et construit un planning de soutenances sans conflit.',
+    puzzleTitle: 'Saurez-vous placer cette soutenance ?',
+    puzzleHint: 'Glissez la fiche vers une case libre, ou choisissez une case.',
+    placeHere: (project: string, room: string, time: string) =>
+      `Placer « ${project} » : ${room}, ${time}`,
+    solved: 'Plus aucun conflit. UniTrack fait cette vérification à chaque changement.',
+    restart: 'Recommencer',
+    puzzleProjects: {
+      encryption: 'Chiffrement de bout en bout',
+      intrusion: 'Détection d’intrusions',
+      plants: 'Reconnaissance de plantes',
+    },
+    studentText: 'Déposez votre rapport et suivez les retours, version après version.',
+    supervisorText: 'Évaluez les rapports, donnez vos disponibilités, retrouvez vos jurys.',
+    adminText: 'Générez le planning, ajustez-le à la main, puis publiez-le.',
   },
   roles: {
     student: 'Étudiant·e',

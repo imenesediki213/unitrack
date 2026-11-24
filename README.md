@@ -14,6 +14,8 @@ member who is not available.
 
 ## Features
 
+- **Main page.** Explains the app to visitors, with a small puzzle: resolve a schedule conflict.
+  It runs the same conflict check as the planning board.
 - **Three roles.** Students, professors (who supervise and sit on juries) and the head of
   department. A new account has no access until the head of department gives it a role.
 - **Projects.** Title, students, supervisor, jury, and a status that moves from in progress to
@@ -25,7 +27,7 @@ member who is not available.
   language why none exists.
 - **Planning board.** Rooms × slots grid with drag and drop, or select-then-place for touch and
   keyboard. Conflicts appear while you edit, and a schedule with conflicts cannot be saved.
-- **French and English.**
+- **French and English**, **day and night modes**.
 
 ## Screenshots
 
@@ -58,6 +60,8 @@ user cannot do.
 | `src/scheduler` | Conflict detection, solver and explanations |
 | `src/planning` | Planning board, rooms, slots, published defenses |
 | `src/projects` | Projects, juries, report versions |
+| `src/landing` | Main page and its puzzle |
+| `src/theme` | Day and night switch |
 | `src/auth`, `src/people`, `src/availability` | Sign-in, roles, availability |
 | `src/messages` | All the text of the interface |
 | `supabase/migrations` | Tables, triggers and policies |
@@ -118,7 +122,7 @@ where id = (select id from auth.users where email = 'you@example.com');
 ## Tests
 
 ```sh
-npm test          # scheduler, planning and messages
+npm test          # scheduler, planning, main page puzzle and messages
 npm run test:db   # permission rules, needs the local Supabase stack (keeps its data)
 ```
 

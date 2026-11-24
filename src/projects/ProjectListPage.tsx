@@ -8,6 +8,7 @@ import { useLanguage } from '../messages/LanguageContext'
 import { MyDefenses } from '../planning/MyDefenses'
 import { createProject, listProjects } from './api'
 import { ProjectForm } from './ProjectForm'
+import { supervisorTints } from './tints'
 
 export function ProjectListPage() {
   const { t, language } = useLanguage()
@@ -17,6 +18,8 @@ export function ProjectListPage() {
   const isAdmin = me.role === 'admin'
 
   if (!projects.data) return <Loading error={projects.error} />
+
+  const tints = supervisorTints(projects.data)
 
   function myPart(project: Project): string | null {
     if (project.supervisor.id === me.id) return t.projects.roleSupervisor
@@ -40,7 +43,7 @@ export function ProjectListPage() {
       {projects.data.length === 0 && <p className="muted">{t.projects.empty}</p>}
       <ul className="project-list">
         {projects.data.map((project) => (
-          <li key={project.id}>
+          <li key={project.id} className={tints.get(project.supervisor.id)}>
             <h2>
               <Link to={`/projects/${project.id}`}>{project.title}</Link>
             </h2>

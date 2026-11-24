@@ -1,6 +1,8 @@
 import { Link, NavLink } from 'react-router'
 import { useAuth } from '../auth/AuthContext'
 import { useLanguage } from '../messages/LanguageContext'
+import { ThemeSwitch } from '../theme/ThemeSwitch'
+import { Logo } from './Logo'
 
 export function Header() {
   const { t, language, setLanguage } = useLanguage()
@@ -10,6 +12,7 @@ export function Header() {
     <header className="masthead">
       <div className="masthead-top">
         <Link to="/" className="brand">
+          <Logo />
           UniTrack
         </Link>
         <div className="masthead-tools">
@@ -26,6 +29,7 @@ export function Header() {
               </button>
             ))}
           </div>
+          <ThemeSwitch />
           {profile && (
             <>
               <span className="muted">{profile.full_name}</span>

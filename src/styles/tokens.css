@@ -12,19 +12,26 @@
   font-display: swap;
 }
 
+/* light-dark(day, night) follows color-scheme, so both modes are written side by side. */
 :root {
-  --paper: #faf6ec;
-  --paper-raised: #fffdf7;
-  --paper-shaded: #f1ead9;
-  --rule: #d8cfb8;
-  --field-border: #8f866f;
-  --ink: #22262e;
-  --ink-soft: #5c5f66;
-  --blue: #1f3a5f;
-  --blue-pale: #e2e8f0;
-  --oxblood: #8c2f2b;
-  --oxblood-pale: #f5e1dc;
-  --green: #35603f;
+  color-scheme: light;
+
+  --paper: light-dark(#faf6ec, #131a29);
+  --paper-raised: light-dark(#fffdf7, #1b2436);
+  --paper-shaded: light-dark(#f2ebda, #212c41);
+  --rule: light-dark(#ddd3bb, #35425b);
+  --field-border: light-dark(#8f866f, #77829a);
+  --ink: light-dark(#22303f, #ece6d8);
+  --ink-soft: light-dark(#5a5e66, #aab1c0);
+  --blue: light-dark(#1f3a5f, #b4cdf0);
+  --blue-strong: light-dark(#2c4f7e, #d0e1f8);
+  --on-blue: light-dark(#fdf9ef, #131a29);
+  --blue-pale: light-dark(#dfe7f1, #2a3a57);
+  --oxblood: light-dark(#8c2f2b, #f2aba3);
+  --oxblood-pale: light-dark(#f7dfd8, #4a2328);
+  --green: light-dark(#35603f, #9ecfa8);
+  --leaf: light-dark(#5f9a6b, #7fbf8b);
+  --sun: light-dark(#e08e2b, #f4d58d);
 
   --serif: 'Source Serif 4', Georgia, serif;
   --sans: 'Source Sans 3', 'Segoe UI', sans-serif;
@@ -35,4 +42,43 @@
   --space-4: 1.5rem;
   --space-5: 2.5rem;
   --space-6: 4rem;
+
+  /* One pointed corner, like a leaf. */
+  --leaf-shape: 0.25rem 1.375rem 1.375rem 1.375rem;
+  --leaf-shape-large: 0.5rem 3.5rem 0.5rem 3.5rem;
+}
+
+:root[data-theme='night'] {
+  color-scheme: dark;
+}
+
+/* Colours of the cards, one per supervisor. */
+.tint-0 {
+  --tint: light-dark(#d5e8cd, #274032);
+  --tint-ink: light-dark(#1f4222, #cfe9cf);
+}
+
+.tint-1 {
+  --tint: light-dark(#d3e1f4, #263d5f);
+  --tint-ink: light-dark(#1b365c, #d3e2f7);
+}
+
+.tint-2 {
+  --tint: light-dark(#f6dac3, #553524);
+  --tint-ink: light-dark(#63300f, #f8dcc6);
+}
+
+.tint-3 {
+  --tint: light-dark(#e2d9f1, #3c3260);
+  --tint-ink: light-dark(#3c2a62, #e2d8f7);
+}
+
+.tint-4 {
+  --tint: light-dark(#f4e6b0, #4c431f);
+  --tint-ink: light-dark(#54400a, #f3e7b8);
+}
+
+.tint-5 {
+  --tint: light-dark(#c6e5e4, #1c4649);
+  --tint-ink: light-dark(#0f4343, #c9ebe9);
 }

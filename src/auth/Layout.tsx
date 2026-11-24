@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import { Header } from '../components/Header'
 import { Loading } from '../components/Loading'
+import { LandingPage } from '../landing/LandingPage'
 import type { Role } from '../lib/types'
 import { useLanguage } from '../messages/LanguageContext'
 import { NotFoundPage } from '../pages/NotFoundPage'
@@ -9,7 +10,7 @@ import { useAuth, useProfile } from './AuthContext'
 import { SignInPage } from './SignInPage'
 import { SignUpPage } from './SignUpPage'
 
-/** The frame of every page. Decides whether the visitor may go past the sign-in page. */
+/** The frame of every page. Decides what a visitor who is not signed in can see. */
 export function Layout() {
   const { t } = useLanguage()
   const { loading, error, profile } = useAuth()
@@ -17,7 +18,7 @@ export function Layout() {
 
   let content = <Outlet />
   if (loading || error) content = <Loading error={error} />
-  else if (!profile) content = pathname === '/signup' ? <SignUpPage /> : <SignInPage />
+  else if (!profile) content = <SignedOutPage pathname={pathname} />
   else if (!profile.role) {
     content = (
       <div className="narrow">
@@ -33,6 +34,13 @@ export function Layout() {
       <main>{content}</main>
     </>
   )
+}
+
+function SignedOutPage({ pathname }: { pathname: string }) {
+  if (pathname === '/') return <LandingPage />
+  if (pathname === '/signup') return <SignUpPage />
+  // Also for links to a page of the app: it opens once the visitor is signed in.
+  return <SignInPage />
 }
 
 /** Only hides pages. What a user can really read or change is decided by the database. */

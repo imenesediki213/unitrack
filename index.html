@@ -3,7 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#faf6ec" />
+    <script>
+      // Here and not in React, so that the page never appears in the wrong colours first.
+      let theme = null
+      try {
+        theme = localStorage.getItem('unitrack.theme')
+      } catch {
+        // Storage is blocked.
+      }
+      if (theme !== 'day' && theme !== 'night') {
+        theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day'
+      }
+      document.documentElement.dataset.theme = theme
+    </script>
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
     <title>UniTrack</title>
   </head>

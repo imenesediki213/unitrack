@@ -16,6 +16,7 @@ export const en: Messages = {
     availability: 'Availability',
     signOut: 'Sign out',
     language: 'Language',
+    nightMode: 'Night mode',
   },
   notFound: {
     title: 'Page not found',
@@ -36,6 +37,25 @@ export const en: Messages = {
     pendingTitle: 'Account pending',
     pendingText:
       'Your account exists, but the head of department still has to give you a role. Come back later.',
+  },
+  landing: {
+    title: 'From the first report to the defense day.',
+    intro:
+      'UniTrack follows the final-year projects of a department and builds a defense schedule without conflicts.',
+    puzzleTitle: 'Can you place this defense?',
+    puzzleHint: 'Drag the card to a free cell, or choose a cell.',
+    placeHere: (project: string, room: string, time: string) =>
+      `Place “${project}”: ${room}, ${time}`,
+    solved: 'No conflict left. UniTrack runs this check at every change.',
+    restart: 'Start again',
+    puzzleProjects: {
+      encryption: 'End-to-end encryption',
+      intrusion: 'Intrusion detection',
+      plants: 'Plant recognition',
+    },
+    studentText: 'Upload your report and follow the feedback, version after version.',
+    supervisorText: 'Review reports, give your availability, find your juries.',
+    adminText: 'Generate the schedule, adjust it by hand, then publish it.',
   },
   roles: {
     student: 'Student',

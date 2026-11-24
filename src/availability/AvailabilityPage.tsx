@@ -79,7 +79,7 @@ function SlotChoices({ professorId }: { professorId: string }) {
                 <button
                   key={slot.id}
                   type="button"
-                  className="slot-choice"
+                  className="slot-choice tint-0"
                   aria-pressed={isAvailable}
                   disabled={busy}
                   onClick={() => toggle(slot.id, !isAvailable)}

@@ -63,7 +63,7 @@ export function SignUpPage() {
         </form>
       )}
       <p>
-        {t.auth.hasAccount} <Link to="/">{t.auth.signIn}</Link>
+        {t.auth.hasAccount} <Link to="/login">{t.auth.signIn}</Link>
       </p>
     </div>
   )

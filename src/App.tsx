@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
 import { AuthProvider, useProfile } from './auth/AuthContext'
 import { Layout, RequireRole } from './auth/Layout'
 import { AvailabilityPage } from './availability/AvailabilityPage'
@@ -50,6 +50,9 @@ const router = createBrowserRouter([
           </RequireRole>
         ),
       },
+      // Layout shows these two to visitors. A signed-in user has no use for them.
+      { path: '/login', element: <Navigate to="/" replace /> },
+      { path: '/signup', element: <Navigate to="/" replace /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

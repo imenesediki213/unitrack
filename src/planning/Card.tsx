@@ -5,15 +5,23 @@ import { useLanguage } from '../messages/LanguageContext'
 
 interface Props {
   project: Project
+  /** The class that gives the colour of the supervisor. */
+  tint?: string
   isSelected?: boolean
   hasConflict?: boolean
   /** Left out for past defenses, which cannot move. */
   onSelect?: (projectId: string | null) => void
 }
 
-export function Card({ project, isSelected = false, hasConflict = false, onSelect }: Props) {
+export function Card({ project, tint, isSelected = false, hasConflict = false, onSelect }: Props) {
   const { t, language } = useLanguage()
-  const classes = ['card', isSelected && 'selected', hasConflict && 'conflict', !onSelect && 'fixed']
+  const classes = [
+    'card',
+    tint,
+    isSelected && 'selected',
+    hasConflict && 'conflict',
+    !onSelect && 'fixed',
+  ]
 
   const content = (
     <>
@@ -21,7 +29,7 @@ export function Card({ project, isSelected = false, hasConflict = false, onSelec
       {!onSelect && <span className="card-tag">{t.planning.defendedTag}</span>}
       <strong>{project.title}</strong>
       <span>{formatList(language, project.students.map((student) => student.full_name))}</span>
-      <span className="card-jury">
+      <span>
         {[project.supervisor, ...project.jury.map(({ person }) => person)]
           .map((person) => person.full_name)
           .join(' · ')}
