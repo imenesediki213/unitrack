@@ -4,8 +4,10 @@ import { ErrorMessage } from '../components/ErrorMessage'
 import { Loading } from '../components/Loading'
 import { useAction, useLoad } from '../lib/hooks'
 import type { Project, ReportVersion } from '../lib/types'
-import { formatDateTime } from '../messages/format'
+import { formatDate, formatDateTime } from '../messages/format'
 import { useLanguage } from '../messages/LanguageContext'
+import { getSettings } from '../planning/api'
+import { isLate } from './deadline'
 import { downloadReport, listVersions, reviewVersion, submitVersion } from './reports'
 
 interface Props {
@@ -15,9 +17,11 @@ interface Props {
 }
 
 export function ReportSection({ project, onChange }: Props) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const me = useProfile()
   const versions = useLoad(() => listVersions(project.id), project.id)
+  const settings = useLoad(getSettings)
+  const deadline = settings.data?.report_deadline ?? null
 
   const isStudent = project.students.some((student) => student.id === me.id)
   const isSupervisor = project.supervisor.id === me.id
@@ -33,6 +37,10 @@ export function ReportSection({ project, onChange }: Props) {
   return (
     <section>
       <h2>{t.reports.title}</h2>
+      {deadline && (
+        <p className="muted">{t.reports.deadline(formatDate(language, deadline))}</p>
+      )}
+      <ErrorMessage error={settings.error} />
       {isStudent && project.status === 'in_progress' && (
         <SubmitForm projectId={project.id} onSubmit={handleChange} />
       )}
@@ -44,14 +52,18 @@ export function ReportSection({ project, onChange }: Props) {
       {versions.data.length === 0 && <p className="muted">{t.reports.empty}</p>}
       <ol className="versions">
         {versions.data.map((version) => (
-          <Version key={version.id} version={version} />
+          <Version
+            key={version.id}
+            version={version}
+            late={isLate(version.uploaded_at, deadline)}
+          />
         ))}
       </ol>
     </section>
   )
 }
 
-function Version({ version }: { version: ReportVersion }) {
+function Version({ version, late }: { version: ReportVersion; late: boolean }) {
   const { t, language } = useLanguage()
   const { run, busy, error } = useAction()
 
@@ -60,6 +72,7 @@ function Version({ version }: { version: ReportVersion }) {
       <div className="version-heading">
         <h3>{t.reports.version(version.version_number)}</h3>
         <span className="tag">{t.reports.decision[version.decision]}</span>
+        {late && <span className="late">{t.reports.late}</span>}
       </div>
       <p className="muted">
         {t.reports.uploadedOn(formatDateTime(language, version.uploaded_at))}

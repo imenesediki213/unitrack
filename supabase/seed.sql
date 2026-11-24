@@ -32,6 +32,9 @@ from (values
   ('student10', 'Adel Slimani'),
   ('student11', 'Kenza Moussaoui'),
   ('student12', 'Rayan Toumi'),
+  ('student13', 'Nour Bensalem'),
+  ('student14', 'Yanis Khelifi'),
+  ('student15', 'Maya Cherif'),
   ('newcomer', 'Ines Larbi')
 ) as accounts (login, full_name);
 
@@ -53,11 +56,12 @@ where id in (
 update public.profiles set role = 'student'
 where id in (
   select md5('student' || lpad(number::text, 2, '0'))::uuid
-  from generate_series(1, 12) as number
+  from generate_series(1, 15) as number
 );
 
 -- The status is written directly because PDF files cannot be created from SQL.
--- Projects 11 and 12 are left in progress to try the report workflow.
+-- Projects 11 and 12 are left in progress to try the report workflow, and the jury of
+-- project 12 is still being invited.
 create temporary table demo (
   number int, title text, supervisor text, president text, examiner text, status text
 );
@@ -84,9 +88,17 @@ select md5('project' || number)::uuid, md5('student' || lpad(number::text, 2, '0
 from demo;
 
 insert into public.jury_members (project_id, professor_id, jury_role)
-select md5('project' || number)::uuid, md5(president)::uuid, 'president'::public.jury_role from demo
+select md5('project' || number)::uuid, md5(president)::uuid, 'president'::public.jury_role
+from demo where number <> 12
 union all
-select md5('project' || number)::uuid, md5(examiner)::uuid, 'examiner' from demo;
+select md5('project' || number)::uuid, md5(examiner)::uuid, 'examiner'
+from demo where number <> 12;
+
+insert into public.jury_invitations (project_id, professor_id, jury_role, status, reply) values
+  (md5('project12')::uuid, md5('yacine')::uuid, 'president', 'accepted', null),
+  (md5('project12')::uuid, md5('omar')::uuid, 'examiner', 'pending', null),
+  (md5('project12')::uuid, md5('sofia')::uuid, 'examiner', 'refused',
+    'Je serai en mission pendant les soutenances.');
 
 drop table demo;
 
@@ -108,3 +120,58 @@ where p.role in ('supervisor', 'admin')
   and not (p.id = md5('yacine')::uuid and s.start_time = '14:00')
   and not (p.id = md5('omar')::uuid and s.day = '2027-06-15')
   and not (p.id = md5('amel')::uuid and s.start_time = '09:00');
+
+-- Students 13 to 15 have no project yet: they can choose a theme or propose one.
+update public.settings
+set themes_open = true, jury_open = true, report_deadline = '2027-05-31 23:59:59+01';
+
+insert into public.themes (title, description, professor_id, proposed_by, capacity, status, refusal_reason)
+select title, description, md5(professor)::uuid, md5(student)::uuid, capacity,
+  status::public.theme_status, reason
+from (values
+  ('Tableau de bord énergétique d’un campus',
+   'Collecter les relevés des compteurs d’un bâtiment, les stocker et afficher les consommations anormales.',
+   'karim', null, 2, 'open', null),
+  ('Détection de fuites mémoire dans une application web',
+   'Étudier les outils de profilage, puis écrire un outil qui repère les fuites les plus courantes.',
+   'karim', null, 1, 'open', null),
+  ('Recommandation de cours pour étudiants',
+   'Comparer deux méthodes de recommandation sur un jeu de données public et présenter les résultats.',
+   'lina', null, 1, 'open', null),
+  ('Synchronisation hors ligne d’une application mobile',
+   'Concevoir une application qui reste utilisable sans réseau et résout les conflits au retour de la connexion.',
+   'omar', null, 2, 'open', null),
+  ('Analyse des performances de files de messages',
+   'Mesurer le débit et la latence de deux systèmes de files de messages dans les mêmes conditions.',
+   'amel', null, 1, 'pending', null),
+  ('Plateforme universelle d’apprentissage',
+   'Créer une plateforme complète pour tous les cours de l’université.',
+   'sofia', null, 2, 'refused', 'Le sujet est trop large : limitez-le à un seul type de cours.'),
+  ('Carte collaborative des salles libres',
+   'Les étudiants signalent les salles libres sur une carte, avec une vérification par le planning officiel.',
+   'lina', 'student13', 1, 'proposed', null)
+) as themes (title, description, professor, student, capacity, status, reason);
+
+insert into public.theme_requests (theme_id, student_id, message, status, reply)
+select t.id, md5(student)::uuid, message, r.status::public.request_status, reply
+from (values
+  ('Tableau de bord énergétique d’un campus', 'student15',
+   'J’ai suivi le cours de bases de données et j’aimerais travailler sur des mesures réelles.',
+   'pending', null),
+  ('Recommandation de cours pour étudiants', 'student15',
+   'Le sujet rejoint mon projet de troisième année.',
+   'refused', 'Ce sujet demande un bon niveau en statistiques. Je vous conseille un autre thème.'),
+  ('Tableau de bord énergétique d’un campus', 'student13',
+   'Je voudrais apprendre à visualiser des données et je peux travailler en binôme.',
+   'pending', null)
+) as r (title, student, message, status, reply)
+join public.themes t on t.title = r.title;
+
+insert into public.messages (project_id, author_id, body, created_at) values
+  (md5('project11')::uuid, md5('omar')::uuid,
+    'Bonjour, où en êtes-vous de la collecte des journaux ?', now() - interval '3 days'),
+  (md5('project11')::uuid, md5('student11')::uuid,
+    'Bonjour, la collecte fonctionne. Dois-je garder les journaux de debug ?',
+    now() - interval '2 days'),
+  (md5('project12')::uuid, md5('admin')::uuid,
+    'Pensez à inviter votre jury avant la fin du mois.', now() - interval '1 day');

@@ -1,0 +1,32 @@
+.discussion {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-2);
+  max-width: 44rem;
+  margin-bottom: var(--space-3);
+}
+
+.discussion li {
+  max-width: 85%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--leaf-shape);
+  background: var(--paper-shaded);
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+/* The pointed corner is on the side of the author. */
+.discussion .mine {
+  justify-self: end;
+  border-radius: 1.375rem 0.25rem 1.375rem 1.375rem;
+  background: var(--blue-pale);
+}
+
+.discussion p {
+  margin: 0;
+}
+
+.discussion-author span {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}

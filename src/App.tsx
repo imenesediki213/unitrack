@@ -3,6 +3,7 @@ import { AuthProvider, useProfile } from './auth/AuthContext'
 import { Layout, RequireRole } from './auth/Layout'
 import { AvailabilityPage } from './availability/AvailabilityPage'
 import { LanguageProvider } from './messages/LanguageContext'
+import { JuriesPage } from './jury/JuriesPage'
 import { CrashPage } from './pages/CrashPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { PeoplePage } from './people/PeoplePage'
@@ -10,6 +11,7 @@ import { PlanningPage } from './planning/PlanningPage'
 import { SetupPage } from './planning/SetupPage'
 import { ProjectListPage } from './projects/ProjectListPage'
 import { ProjectPage, StudentHomePage } from './projects/ProjectPage'
+import { ThemesPage } from './themes/ThemesPage'
 
 const router = createBrowserRouter([
   {
@@ -18,11 +20,20 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <HomePage /> },
       { path: '/projects/:id', element: <ProjectPage /> },
+      { path: '/themes', element: <ThemesPage /> },
       {
         path: '/projects',
         element: (
           <RequireRole roles={['admin']}>
             <ProjectListPage />
+          </RequireRole>
+        ),
+      },
+      {
+        path: '/juries',
+        element: (
+          <RequireRole roles={['supervisor', 'admin']}>
+            <JuriesPage />
           </RequireRole>
         ),
       },

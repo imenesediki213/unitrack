@@ -241,6 +241,10 @@ label > textarea {
   gap: var(--space-2);
 }
 
+.phase {
+  margin-bottom: var(--space-3);
+}
+
 .panel {
   max-width: 40rem;
   margin-bottom: var(--space-4);
@@ -495,7 +499,7 @@ label > textarea {
 }
 
 .status-track {
-  max-width: 44rem;
+  max-width: 52rem;
   margin-bottom: var(--space-4);
 }
 
@@ -527,7 +531,7 @@ label > textarea {
 
 .status-track ol {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--space-1);
   color: var(--ink-soft);
   line-height: 1.25;
@@ -629,6 +633,15 @@ label > textarea {
   font-weight: 600;
 }
 
+.late {
+  padding: 0 0.55rem;
+  border-radius: 999px;
+  background: var(--oxblood);
+  color: var(--paper);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
 blockquote {
   width: fit-content;
   max-width: 68ch;
@@ -695,7 +708,7 @@ blockquote {
   }
 
   .status-track ol {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
   }
 }
 

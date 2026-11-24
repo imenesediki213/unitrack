@@ -5,7 +5,8 @@ const PROJECT_COLUMNS = `
   id, title, status,
   supervisor:profiles!supervisor_id(id, full_name),
   project_students(student:profiles(id, full_name)),
-  jury_members(jury_role, professor:profiles(id, full_name))
+  jury_members(jury_role, professor:profiles(id, full_name)),
+  theme:themes(description)
 `
 
 interface ProjectRow {
@@ -15,6 +16,7 @@ interface ProjectRow {
   supervisor: Person
   project_students: { student: Person }[]
   jury_members: { jury_role: JuryRole; professor: Person }[]
+  theme: { description: string } | null
 }
 
 /** The database returns only the projects that the user may see. */
@@ -42,6 +44,7 @@ function toProject(row: ProjectRow): Project {
     jury: row.jury_members
       .map(({ jury_role, professor }) => ({ role: jury_role, person: professor }))
       .sort((a, b) => b.role.localeCompare(a.role)),
+    description: row.theme?.description ?? null,
   }
 }
 

@@ -1,0 +1,24 @@
+.invitation-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(26rem, 100%), 1fr));
+  align-items: start;
+  gap: var(--space-3);
+}
+
+.invitation {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--leaf-shape);
+  background: var(--paper-shaded);
+}
+
+.invitation p {
+  margin-bottom: var(--space-2);
+}
+
+.invitation .stack {
+  margin-bottom: 0;
+}
+
+.invitation > button {
+  margin-top: var(--space-2);
+}

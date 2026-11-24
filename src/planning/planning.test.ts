@@ -28,6 +28,7 @@ function project(id: string, status: ProjectStatus, members = jury): Project {
     supervisor: { id: 'sup', full_name: 'Dr. X' },
     students: [],
     jury: members,
+    description: null,
   }
 }
 
@@ -55,7 +56,13 @@ const data: PlanningData = {
     { project_id: 'done', slot_id: 's1', room_id: 'r1' },
     { project_id: 'a', slot_id: 's2', room_id: 'r1' },
   ],
-  settings: { max_defenses_per_day: 3, schedule_published: false },
+  settings: {
+    max_defenses_per_day: 3,
+    schedule_published: false,
+    themes_open: false,
+    jury_open: false,
+    report_deadline: null,
+  },
 }
 
 describe('buildProblem', () => {

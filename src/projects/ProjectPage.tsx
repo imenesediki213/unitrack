@@ -1,12 +1,16 @@
 import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
 import { useProfile } from '../auth/AuthContext'
 import { ErrorMessage } from '../components/ErrorMessage'
 import { Loading } from '../components/Loading'
+import { Discussion } from '../discussion/Discussion'
 import { useAction, useLoad } from '../lib/hooks'
 import type { Project } from '../lib/types'
 import { useLanguage } from '../messages/LanguageContext'
+import { NextSteps } from '../nextSteps/NextSteps'
 import { DefenseSlot } from '../planning/DefenseSlot'
+import { SentRequests } from '../themes/RequestLists'
+import { listRequests } from '../themes/requests'
 import { deleteProject, getProject, listProjects, updateProject } from './api'
 import { ProjectForm } from './ProjectForm'
 import { ReportSection } from './ReportSection'
@@ -23,29 +27,58 @@ export function ProjectPage() {
 
 /** A student has at most one project, so their home page is that project. */
 export function StudentHomePage() {
-  const { t } = useLanguage()
   const projects = useLoad(listProjects)
 
   if (!projects.data) return <Loading error={projects.error} />
 
   const project = projects.data[0]
-  if (!project) return <p className="muted">{t.projects.noneAssigned}</p>
+  if (!project) return <NoProject />
   return <ProjectDetails project={project} onChange={projects.reload} />
+}
+
+function NoProject() {
+  const { t } = useLanguage()
+  const requests = useLoad(listRequests)
+
+  return (
+    <>
+      <h1>{t.nav.myProject}</h1>
+      <StatusTrack status={null} />
+      <NextSteps refreshKey={String(requests.data?.length)} />
+      <p>{t.projects.noneAssigned}</p>
+      <Link to="/themes" className="button primary">
+        {t.themes.browse}
+      </Link>
+      <ErrorMessage error={requests.error} />
+      <SentRequests requests={requests.data ?? []} onChange={requests.reload} />
+    </>
+  )
 }
 
 function ProjectDetails({ project, onChange }: { project: Project; onChange: () => void }) {
   const me = useProfile()
-  const isAdmin = me.role === 'admin'
-  const canEdit = isAdmin && project.status !== 'defended'
+  const isStudent = project.students.some((student) => student.id === me.id)
+  const isTeam = isStudent || project.supervisor.id === me.id
+  const canEdit = me.role === 'admin' && project.status !== 'defended'
+  // Every change on this page can change what the student has to do next.
+  const [changes, setChanges] = useState(0)
+
+  function handleChange() {
+    setChanges((count) => count + 1)
+    onChange()
+  }
 
   return (
     <article className="project">
       <h1>{project.title}</h1>
+      {project.description && <p>{project.description}</p>}
       <StatusTrack status={project.status} />
-      {canEdit && <AdminTools project={project} onChange={onChange} />}
-      <DefenseSlot project={project} onDefended={onChange} />
-      <Team project={project} canEdit={canEdit} onChange={onChange} />
-      <ReportSection project={project} onChange={onChange} />
+      {isStudent && <NextSteps refreshKey={String(changes)} />}
+      {canEdit && <AdminTools project={project} onChange={handleChange} />}
+      <DefenseSlot project={project} onDefended={handleChange} />
+      <Team project={project} canEdit={canEdit} onChange={handleChange} />
+      <ReportSection project={project} onChange={handleChange} />
+      {isTeam && <Discussion project={project} onChange={handleChange} />}
     </article>
   )
 }

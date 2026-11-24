@@ -4,6 +4,7 @@ import { Loading } from '../components/Loading'
 import { useAction, useLoad } from '../lib/hooks'
 import { formatDay, formatTime } from '../messages/format'
 import { useLanguage } from '../messages/LanguageContext'
+import { dayOf, endOfDay } from '../projects/deadline'
 import {
   addRoom,
   addSlots,
@@ -177,11 +178,17 @@ function Rules() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const max = Number(new FormData(event.currentTarget).get('max'))
-    setSaved(await run(() => updateSettings({ max_defenses_per_day: max })))
+    const form = new FormData(event.currentTarget)
+    const deadline = String(form.get('deadline'))
+    const changes = {
+      max_defenses_per_day: Number(form.get('max')),
+      report_deadline: deadline ? endOfDay(deadline) : null,
+    }
+    setSaved(await run(() => updateSettings(changes)))
   }
 
   if (!settings.data) return <Loading error={settings.error} />
+  const { max_defenses_per_day, report_deadline } = settings.data
 
   return (
     <section>
@@ -194,9 +201,18 @@ function Rules() {
             type="number"
             min={1}
             max={20}
-            defaultValue={settings.data.max_defenses_per_day}
+            defaultValue={max_defenses_per_day}
             required
           />
+        </label>
+        <label>
+          {t.setup.deadline}
+          <input
+            name="deadline"
+            type="date"
+            defaultValue={report_deadline ? dayOf(report_deadline) : ''}
+          />
+          <span className="hint">{t.setup.deadlineHint}</span>
         </label>
         <ErrorMessage error={error} />
         <div className="actions">

@@ -1,0 +1,78 @@
+.theme-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(24rem, 100%), 1fr));
+  align-items: start;
+  gap: var(--space-3);
+}
+
+.theme {
+  padding: var(--space-4);
+  border-radius: var(--leaf-shape-large);
+  background: var(--tint);
+  color: var(--tint-ink);
+}
+
+.theme:nth-child(even) {
+  border-radius: 3.5rem 0.5rem 3.5rem 0.5rem;
+}
+
+.theme h3 {
+  /* Keeps the title out of the large corners. */
+  margin: 0 var(--space-3) var(--space-1);
+  color: inherit;
+  font-size: 1.25rem;
+}
+
+.theme > p,
+.theme > .card-tag,
+.theme > .actions,
+.theme > .stack {
+  margin: 0 var(--space-3) var(--space-2);
+}
+
+.theme > .card-tag {
+  display: inline-block;
+}
+
+.request-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(24rem, 100%), 1fr));
+  align-items: start;
+  gap: var(--space-3);
+}
+
+.request {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--leaf-shape);
+  background: var(--paper-shaded);
+}
+
+.request p {
+  margin-bottom: var(--space-2);
+}
+
+.request .stack {
+  margin-bottom: 0;
+}
+
+.request blockquote {
+  background: var(--paper-raised);
+}
+
+.request-accepted .card-tag {
+  background: var(--green);
+  color: var(--paper);
+}
+
+.request-refused .card-tag {
+  background: var(--oxblood);
+  color: var(--paper);
+}
+
+.theme-description {
+  white-space: pre-line;
+}
+
+.theme .stack {
+  margin-top: var(--space-3);
+}

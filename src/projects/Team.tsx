@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react'
 import { ErrorMessage } from '../components/ErrorMessage'
+import { ProjectInvitations } from '../jury/ProjectInvitations'
 import { useAction, useLoad } from '../lib/hooks'
 import type { JuryRole, Project } from '../lib/types'
 import { useLanguage } from '../messages/LanguageContext'
@@ -75,6 +76,7 @@ export function Team({ project, canEdit, onChange }: Props) {
           ))}
         </ul>
         {!isJuryComplete(project.jury) && <p className="muted">{t.projects.incompleteJury}</p>}
+        <ProjectInvitations project={project} onChange={onChange} />
         {canEdit && (
           <AddJuryMember
             project={project}

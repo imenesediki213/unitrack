@@ -18,10 +18,21 @@ member who is not available.
   It runs the same conflict check as the planning board.
 - **Three roles.** Students, professors (who supervise and sit on juries) and the head of
   department. A new account has no access until the head of department gives it a role.
+- **Themes.** Professors publish project themes, students propose their own ideas, and the head of
+  department approves them and opens or closes the period.
+- **Supervision requests.** Students ask for a theme, at most three at a time. The professor
+  accepts, which creates the project, or refuses with a reason. The head of department sees who
+  still has no project.
+- **Jury invitations.** The students or the supervisor invite professors, who accept or refuse. The
+  head of department confirms the jury and sees how many juries each professor has.
 - **Projects.** Title, students, supervisor, jury, and a status that moves from in progress to
   submitted, approved for defense, and defended.
 - **Report versions.** Students upload PDF versions. The supervisor approves them or requests
   changes with a comment. The history cannot be edited.
+- **Discussion.** Messages between the students of a project and their supervisor. Neither the jury
+  nor the head of department can read them.
+- **Next steps and deadline.** Each role sees what to do now. Reports submitted after the deadline
+  are accepted and marked late.
 - **Availability.** Professors declare the slots when they can attend.
 - **Scheduler.** Generates a schedule that respects every hard constraint, or explains in plain
   language why none exists.
@@ -62,6 +73,10 @@ user cannot do.
 | `src/projects` | Projects, juries, report versions |
 | `src/landing` | Main page and its puzzle |
 | `src/theme` | Day and night switch |
+| `src/themes` | Project themes and supervision requests |
+| `src/jury` | Jury invitations |
+| `src/discussion` | Messages of a project |
+| `src/nextSteps` | What each role has to do now |
 | `src/auth`, `src/people`, `src/availability` | Sign-in, roles, availability |
 | `src/messages` | All the text of the interface |
 | `supabase/migrations` | Tables, triggers and policies |
@@ -110,6 +125,7 @@ The demo data is fictional. Every demo account uses the password `unitrack-demo`
 | `admin@unitrack.test` | Head of department |
 | `omar@unitrack.test` | Professor |
 | `student11@unitrack.test` | Student with a project in progress |
+| `student14@unitrack.test` | Student without a project |
 
 On a hosted project, do not run `seed.sql`. Apply the migrations with `npx supabase db push`,
 sign up in the app, then make that first account an admin in the SQL editor:
@@ -139,6 +155,7 @@ The solver is also compared with a brute-force search on 300 small random proble
 - One defense session at a time, with no archive of past years.
 - A file that was uploaded but whose submission failed stays in storage, invisible in the app.
 - There is no password reset or email notification.
+- Discussions have no "read" state: the reminder to answer stays until the person answers.
 - `src/lib/types.ts` is written by hand and must follow the migrations.
 
 ## Future improvements

@@ -11,6 +11,11 @@ export function formatDay(language: Language, day: string): string {
   }).format(new Date(`${day}T00:00:00Z`))
 }
 
+/** A moment, as a day in the user's time zone. */
+export function formatDate(language: Language, timestamp: string): string {
+  return new Intl.DateTimeFormat(language, { dateStyle: 'long' }).format(new Date(timestamp))
+}
+
 export function formatDateTime(language: Language, timestamp: string): string {
   return new Intl.DateTimeFormat(language, { dateStyle: 'long', timeStyle: 'short' }).format(
     new Date(timestamp),

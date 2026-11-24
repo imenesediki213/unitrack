@@ -39,7 +39,10 @@ export function removeSlot(id: string): Promise<void> {
 
 export function getSettings(): Promise<Settings> {
   return unwrap(
-    supabase.from('settings').select('max_defenses_per_day, schedule_published').single(),
+    supabase
+      .from('settings')
+      .select('max_defenses_per_day, schedule_published, themes_open, jury_open, report_deadline')
+      .single(),
   )
 }
 

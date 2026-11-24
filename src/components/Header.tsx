@@ -1,4 +1,4 @@
-import { Link, NavLink } from 'react-router'
+import { Link, NavLink, useNavigate } from 'react-router'
 import { useAuth } from '../auth/AuthContext'
 import { useLanguage } from '../messages/LanguageContext'
 import { ThemeSwitch } from '../theme/ThemeSwitch'
@@ -7,6 +7,13 @@ import { Logo } from './Logo'
 export function Header() {
   const { t, language, setLanguage } = useLanguage()
   const { profile, signOut } = useAuth()
+  const navigate = useNavigate()
+
+  function handleSignOut() {
+    signOut()
+    // The next person to sign in may have no access to the current page.
+    navigate('/')
+  }
 
   return (
     <header className="masthead">
@@ -33,7 +40,7 @@ export function Header() {
           {profile && (
             <>
               <span className="muted">{profile.full_name}</span>
-              <button type="button" className="link-button" onClick={signOut}>
+              <button type="button" className="link-button" onClick={handleSignOut}>
                 {t.nav.signOut}
               </button>
             </>
@@ -44,7 +51,9 @@ export function Header() {
       {profile?.role === 'admin' && (
         <nav className="main-nav">
           <NavLink to="/">{t.nav.planning}</NavLink>
+          <NavLink to="/themes">{t.nav.themes}</NavLink>
           <NavLink to="/projects">{t.nav.projects}</NavLink>
+          <NavLink to="/juries">{t.nav.juries}</NavLink>
           <NavLink to="/people">{t.nav.people}</NavLink>
           <NavLink to="/setup">{t.nav.setup}</NavLink>
           <NavLink to="/availability">{t.nav.availability}</NavLink>
@@ -53,7 +62,15 @@ export function Header() {
       {profile?.role === 'supervisor' && (
         <nav className="main-nav">
           <NavLink to="/">{t.nav.projects}</NavLink>
+          <NavLink to="/themes">{t.nav.themes}</NavLink>
+          <NavLink to="/juries">{t.nav.juries}</NavLink>
           <NavLink to="/availability">{t.nav.availability}</NavLink>
+        </nav>
+      )}
+      {profile?.role === 'student' && (
+        <nav className="main-nav">
+          <NavLink to="/">{t.nav.myProject}</NavLink>
+          <NavLink to="/themes">{t.nav.themes}</NavLink>
         </nav>
       )}
     </header>

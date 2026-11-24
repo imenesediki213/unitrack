@@ -1,19 +1,13 @@
 import { expect, it } from 'vitest'
-import type { Project } from '../lib/types'
-import { supervisorTints } from './tints'
+import { tintsFor } from './tints'
 
-function projectOf(supervisorId: string): Project {
-  const supervisor = { id: supervisorId, full_name: supervisorId }
-  return { id: '', title: '', status: 'approved', supervisor, students: [], jury: [] }
-}
-
-it('gives each supervisor one colour, whatever the order of the projects', () => {
-  const tints = supervisorTints(['b', 'a', 'b'].map(projectOf))
-  expect(tints).toEqual(supervisorTints(['a', 'b'].map(projectOf)))
+it('gives each professor one colour, in any order', () => {
+  const tints = tintsFor(['b', 'a', 'b'])
+  expect(tints).toEqual(tintsFor(['a', 'b']))
   expect(tints.get('a')).not.toBe(tints.get('b'))
 })
 
-it('uses the six colours again beyond six supervisors', () => {
-  const tints = supervisorTints(['a', 'b', 'c', 'd', 'e', 'f', 'g'].map(projectOf))
+it('uses the six colours again beyond six professors', () => {
+  const tints = tintsFor(['a', 'b', 'c', 'd', 'e', 'f', 'g'])
   expect(tints.get('g')).toBe(tints.get('a'))
 })

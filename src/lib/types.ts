@@ -29,6 +29,73 @@ export interface Project {
   students: Person[]
   /** The president and the examiners. The supervisor is not repeated here. */
   jury: JuryMember[]
+  /** Null when the admin created the project directly. */
+  description: string | null
+}
+
+/**
+ * proposed: a student's idea, for the professor. pending: for the admin.
+ * taken: it has all its students.
+ */
+export type ThemeStatus = 'proposed' | 'pending' | 'open' | 'refused' | 'taken'
+
+export interface Theme {
+  id: string
+  title: string
+  description: string
+  /** How many students can take it. */
+  capacity: number
+  status: ThemeStatus
+  refusal_reason: string | null
+  professor: Person
+  /** The student who had the idea, if it is one. */
+  proposed_by: string | null
+  /** Null when the user may not see who proposed it. */
+  proposer: Person | null
+}
+
+export type RequestStatus = 'pending' | 'accepted' | 'refused' | 'cancelled'
+
+export interface ThemeRequest {
+  id: string
+  status: RequestStatus
+  /** Empty when the theme is the student's own idea. */
+  message: string | null
+  reply: string | null
+  student: Person
+  theme: { id: string; title: string; professor: Person }
+}
+
+/** accepted: by the professor. confirmed: by the admin, so the professor is in the jury. */
+export type InvitationStatus = 'pending' | 'accepted' | 'refused' | 'confirmed' | 'cancelled'
+
+export interface JuryInvitation {
+  id: string
+  project_id: string
+  jury_role: JuryRole
+  status: InvitationStatus
+  reply: string | null
+  professor: Person
+}
+
+export interface JuryLoad {
+  professor_id: string
+  confirmed: number
+  /** Invitations that can still lead to a seat. */
+  waiting: number
+}
+
+export interface Message {
+  id: string
+  body: string
+  created_at: string
+  /** Null when the user may no longer see that person. */
+  author: Person | null
+}
+
+export interface LastMessage {
+  project_id: string
+  author_id: string
 }
 
 export type Decision = 'pending' | 'approved' | 'changes_requested'
@@ -63,4 +130,10 @@ export interface Defense {
 export interface Settings {
   max_defenses_per_day: number
   schedule_published: boolean
+  /** Students can ask for themes and propose their own. */
+  themes_open: boolean
+  /** Students and supervisors can invite jury members. */
+  jury_open: boolean
+  /** The moment when a report becomes late. */
+  report_deadline: string | null
 }

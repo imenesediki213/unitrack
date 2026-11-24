@@ -4,8 +4,9 @@ import { ErrorMessage } from '../components/ErrorMessage'
 import { Loading } from '../components/Loading'
 import { useAction, useLoad } from '../lib/hooks'
 import { useLanguage } from '../messages/LanguageContext'
+import { NextSteps } from '../nextSteps/NextSteps'
 import { listProjects } from '../projects/api'
-import { supervisorTints } from '../projects/tints'
+import { tintsFor } from '../projects/tints'
 import { findConflicts, generateSchedule, type GenerateResult } from '../scheduler'
 import {
   getSettings,
@@ -42,6 +43,7 @@ export function PlanningPage() {
     return (
       <>
         <h1>{t.planning.title}</h1>
+        <NextSteps />
         <p>{t.planning.needsSetup}</p>
         <Link to="/setup">{t.planning.toSetup}</Link>
       </>
@@ -50,6 +52,7 @@ export function PlanningPage() {
   return (
     <>
       <ErrorMessage error={planning.error} />
+      <NextSteps refreshKey={String(planning.data.defenses.length)} />
       <PlanningEditor data={planning.data} onSaved={planning.reload} />
     </>
   )
@@ -73,7 +76,7 @@ function PlanningEditor({ data, onSaved }: { data: PlanningData; onSaved: () => 
 
   const problem = useMemo(() => buildProblem(data), [data])
   const saved = useMemo(() => movablePlacements(data, problem), [data, problem])
-  const tints = useMemo(() => supervisorTints(data.projects), [data])
+  const tints = useMemo(() => tintsFor(data.projects.map((project) => project.supervisor.id)), [data])
   const explainer = useMemo(() => createExplainer(data, t, language), [data, t, language])
 
   const [placements, setPlacements] = useState(saved)

@@ -5,10 +5,12 @@ import { useLoad } from '../lib/hooks'
 import type { Project } from '../lib/types'
 import { formatList } from '../messages/format'
 import { useLanguage } from '../messages/LanguageContext'
+import { NextSteps } from '../nextSteps/NextSteps'
 import { MyDefenses } from '../planning/MyDefenses'
+import { StudentsWithoutProject } from '../themes/StudentsWithoutProject'
 import { createProject, listProjects } from './api'
 import { ProjectForm } from './ProjectForm'
-import { supervisorTints } from './tints'
+import { tintsFor } from './tints'
 
 export function ProjectListPage() {
   const { t, language } = useLanguage()
@@ -19,17 +21,19 @@ export function ProjectListPage() {
 
   if (!projects.data) return <Loading error={projects.error} />
 
-  const tints = supervisorTints(projects.data)
+  const tints = tintsFor(projects.data.map((project) => project.supervisor.id))
 
   function myPart(project: Project): string | null {
     if (project.supervisor.id === me.id) return t.projects.roleSupervisor
     if (project.jury.some(({ person }) => person.id === me.id)) return t.projects.roleJury
-    return null
+    // The others are the projects of an invitation.
+    return isAdmin ? null : t.projects.roleInvited
   }
 
   return (
     <>
       <h1>{isAdmin ? t.projects.title : t.projects.mine}</h1>
+      {!isAdmin && <NextSteps />}
 
       {isAdmin && (
         <details className="panel">
@@ -39,6 +43,8 @@ export function ProjectListPage() {
           />
         </details>
       )}
+
+      {isAdmin && <StudentsWithoutProject />}
 
       {projects.data.length === 0 && <p className="muted">{t.projects.empty}</p>}
       <ul className="project-list">
