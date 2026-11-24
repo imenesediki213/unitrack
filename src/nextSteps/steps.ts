@@ -7,6 +7,7 @@ import type {
   Profile,
   Project,
   ReportVersion,
+  Result,
   Settings,
   Theme,
   ThemeRequest,
@@ -26,13 +27,14 @@ export type Step =
         | 'inviteJury'
         | 'waitJury'
         | 'giveAvailability'
+        | 'readResult'
         | 'finished'
     }
   | { type: CountedStep; count: number }
   | { type: 'submitReport'; deadline: string | null }
   | { type: 'submitChanges'; version: number }
   | { type: 'prepareDefense'; day: string }
-  | { type: 'reviewReport' | 'answerMessage'; projectId: string; title: string }
+  | { type: 'reviewReport' | 'answerMessage' | 'enterResult'; projectId: string; title: string }
 
 export type CountedStep =
   | 'answerIdeas'
@@ -44,6 +46,7 @@ export type CountedStep =
   | 'studentsWithoutProject'
   | 'scheduleProjects'
   | 'markDefended'
+  | 'publishResults'
 
 export interface StudentData {
   me: Profile
@@ -56,6 +59,7 @@ export interface StudentData {
   lastMessages: LastMessage[]
   defenses: Defense[]
   slots: TimeSlot[]
+  results: Result[]
 }
 
 export function studentSteps(data: StudentData): Step[] {
@@ -75,7 +79,10 @@ export function studentSteps(data: StudentData): Step[] {
 }
 
 function reportStep(project: Project, data: StudentData): Step {
-  if (project.status === 'defended') return { type: 'finished' }
+  if (project.status === 'defended') {
+    const isPublished = data.results.some(({ project_id }) => project_id === project.id)
+    return { type: isPublished ? 'readResult' : 'finished' }
+  }
   if (project.status === 'submitted') return { type: 'waitReview' }
   if (project.status === 'approved') {
     const defense = data.defenses.find(({ project_id }) => project_id === project.id)
@@ -106,6 +113,7 @@ export interface ProfessorData {
   projects: Project[]
   lastMessages: LastMessage[]
   slots: TimeSlot[]
+  results: Result[]
   /** Ids of the slots when the professor is available. */
   availableSlots: Set<string>
 }
@@ -122,6 +130,14 @@ export function professorSteps(data: ProfessorData): Step[] {
     const last = data.lastMessages.find(({ project_id }) => project_id === id)
     if (students.some((student) => student.id === last?.author_id)) {
       steps.push({ type: 'answerMessage', projectId: id, title })
+    }
+  }
+
+  for (const { id, title, status, jury } of data.projects) {
+    const isPresident = jury.some(({ role, person }) => role === 'president' && person.id === me.id)
+    const hasResult = data.results.some(({ project_id }) => project_id === id)
+    if (status === 'defended' && isPresident && !hasResult) {
+      steps.push({ type: 'enterResult', projectId: id, title })
     }
   }
 
@@ -154,6 +170,7 @@ export function professorSteps(data: ProfessorData): Step[] {
 export interface AdminData extends ProfessorData {
   accounts: Account[]
   studentsWithoutProject: number
+  settings: Settings
   defenses: Defense[]
   /** ISO date, for example "2027-06-15" */
   today: string
@@ -179,6 +196,7 @@ export function adminSteps(data: AdminData): Step[] {
     ['confirmJuries', toConfirm.size],
     ['scheduleProjects', approved.filter(({ id }) => !dayOfProject.has(id)).length],
     ['markDefended', approved.filter(({ id }) => isPast(dayOfProject.get(id))).length],
+    ['publishResults', data.settings.results_published ? 0 : data.results.length],
   ]
   return counts.map(([type, count]) => ({ type, count })).filter(isUseful)
 }

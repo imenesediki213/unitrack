@@ -23,6 +23,7 @@ const LINKS: Partial<Record<Step['type'], string>> = {
   giveRoles: '/people',
   studentsWithoutProject: '/projects',
   markDefended: '/projects',
+  publishResults: '/results',
 }
 
 const WAITING: Step['type'][] = [
@@ -80,6 +81,7 @@ function stepText(t: Messages, language: Language, step: Step): string {
       return t.nextSteps.prepareDefense(formatDay(language, step.day))
     case 'reviewReport':
     case 'answerMessage':
+    case 'enterResult':
       return t.nextSteps[step.type](step.title)
     default:
       return 'count' in step ? t.nextSteps[step.type](step.count) : t.nextSteps[step.type]

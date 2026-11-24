@@ -27,6 +27,9 @@ export function DefenseSlot({ project, onDefended }: Props) {
   const slot = slots.find((item) => item.id === defense?.slot_id)
   const room = rooms.find((item) => item.id === defense?.room_id)
 
+  // The schedule was unpublished after the defense: there is nothing to announce any more.
+  if (project.status === 'defended' && !slot && !schedule.error) return null
+
   async function handleDefended() {
     if (!window.confirm(t.defense.confirmDefended)) return
     if (await run(() => markDefended(project.id))) onDefended()

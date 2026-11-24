@@ -1,16 +1,16 @@
 # UniTrack
 
-UniTrack helps a university department follow final-year projects (PFE, Master's theses) and
-build the defense schedule.
+UniTrack helps a university department run its final-year projects (PFE, Master's theses), from
+the choice of a theme to the mark, and build the defense schedule.
 
-**Status:** MVP, not deployed and not used by a real department. It was checked on a local
+**Status:** working, not deployed and not used by a real department. It was checked on a local
 Supabase stack (PostgreSQL, Auth, Storage), but not on a hosted project.
 
 ## The problem
 
-Departments often track projects in spreadsheets and build the defense calendar by hand. It
-takes days and produces conflicts: a professor expected in two rooms, a room used twice, a jury
-member who is not available.
+Departments often track themes, supervisors and juries in spreadsheets and e-mails, and build the
+defense calendar by hand. It takes days and produces conflicts: a professor expected in two rooms,
+a room used twice, a jury member who is not available.
 
 ## Features
 
@@ -38,6 +38,8 @@ member who is not available.
   language why none exists.
 - **Planning board.** Rooms × slots grid with drag and drop, or select-then-place for touch and
   keyboard. Conflicts appear while you edit, and a schedule with conflicts cannot be saved.
+- **Results.** The president of the jury enters a mark and remarks. Students see them once the head
+  of department publishes the results.
 - **French and English**, **day and night modes**.
 
 ## Screenshots
@@ -75,12 +77,29 @@ user cannot do.
 | `src/theme` | Day and night switch |
 | `src/themes` | Project themes and supervision requests |
 | `src/jury` | Jury invitations |
+| `src/results` | Marks |
 | `src/discussion` | Messages of a project |
 | `src/nextSteps` | What each role has to do now |
 | `src/auth`, `src/people`, `src/availability` | Sign-in, roles, availability |
 | `src/messages` | All the text of the interface |
 | `supabase/migrations` | Tables, triggers and policies |
-| `supabase/tests` | Permission tests |
+| `supabase/tests` | Permission tests, and one scenario for the whole process |
+| `supabase/demo-reports` | Fictional PDFs, uploaded by `supabase db reset` |
+
+### From a theme to a mark
+
+| Step | Who starts it | Who decides |
+|---|---|---|
+| Theme | Professor, or a student's idea | Professor (for an idea), then the head of department |
+| Request | Student | Professor of the theme: the project is created |
+| Jury | Students or supervisor | Invited professor, then the head of department |
+| Report | Student | Supervisor |
+| Defense | Head of department | The scheduler checks every constraint |
+| Result | President of the jury | Head of department, who publishes it |
+
+Policies, triggers and database functions control each step. They check who is asking, and lock
+the rows involved so that two people who act at the same moment cannot, for example, give one
+student two projects.
 
 ### How the scheduler works
 
@@ -125,7 +144,9 @@ The demo data is fictional. Every demo account uses the password `unitrack-demo`
 | `admin@unitrack.test` | Head of department |
 | `omar@unitrack.test` | Professor |
 | `student11@unitrack.test` | Student with a project in progress |
+| `student12@unitrack.test` | Student whose jury is being invited |
 | `student14@unitrack.test` | Student without a project |
+| `karim@unitrack.test` | Professor with requests to answer and a mark to enter |
 
 On a hosted project, do not run `seed.sql`. Apply the migrations with `npx supabase db push`,
 sign up in the app, then make that first account an admin in the SQL editor:
@@ -138,8 +159,8 @@ where id = (select id from auth.users where email = 'you@example.com');
 ## Tests
 
 ```sh
-npm test          # scheduler, planning, main page puzzle and messages
-npm run test:db   # permission rules, needs the local Supabase stack (keeps its data)
+npm test          # scheduler, planning, next steps, display rules and messages
+npm run test:db   # permissions and the whole process, needs the local Supabase stack (keeps its data)
 ```
 
 The solver is also compared with a brute-force search on 300 small random problems.
@@ -154,7 +175,9 @@ The solver is also compared with a brute-force search on 300 small random proble
 - All rooms are considered equivalent and always available.
 - One defense session at a time, with no archive of past years.
 - A file that was uploaded but whose submission failed stays in storage, invisible in the app.
-- There is no password reset or email notification.
+- There is no password reset or email notification. New messages appear after a refresh.
+- A theme takes one or two students, and a jury at most four members besides the supervisor.
+- Results are published all together.
 - Discussions have no "read" state: the reminder to answer stays until the person answers.
 - `src/lib/types.ts` is written by hand and must follow the migrations.
 
@@ -163,6 +186,7 @@ The solver is also compared with a brute-force search on 300 small random proble
 - Run the search in a Web Worker.
 - Break MRV ties with the project that constrains the most others.
 - Generate the database types with the Supabase CLI.
+- Email notifications, and an archive of past years.
 
 ## Licence
 

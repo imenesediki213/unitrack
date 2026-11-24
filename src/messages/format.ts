@@ -22,6 +22,11 @@ export function formatDateTime(language: Language, timestamp: string): string {
   )
 }
 
+/** 16.5 -> "16,5/20" */
+export function formatMark(language: Language, mark: number): string {
+  return `${new Intl.NumberFormat(language).format(mark)}/20`
+}
+
 /** "09:30:00" -> "09:30" */
 export function formatTime(time: string): string {
   return time.slice(0, 5)

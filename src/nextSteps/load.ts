@@ -7,6 +7,7 @@ import { getSettings, listDefenses, listSlots } from '../planning/api'
 import { listProjects } from '../projects/api'
 import { dayOf } from '../projects/deadline'
 import { listVersions } from '../projects/reports'
+import { listResults } from '../results/api'
 import { listThemes } from '../themes/api'
 import { listRequests, listStudentsWithoutProject } from '../themes/requests'
 import { adminSteps, professorSteps, studentSteps, type ProfessorData, type Step } from './steps'
@@ -17,14 +18,16 @@ export async function loadSteps(me: Profile): Promise<Step[]> {
   const data = await loadProfessorData(me)
   if (me.role !== 'admin') return professorSteps(data)
 
-  const [accounts, students, defenses] = await Promise.all([
+  const [accounts, students, settings, defenses] = await Promise.all([
     listAccounts(),
     listStudentsWithoutProject(),
+    getSettings(),
     listDefenses(),
   ])
   const adminData = {
     ...data,
     accounts,
+    settings,
     defenses,
     studentsWithoutProject: students.length,
     today: dayOf(new Date().toISOString()),
@@ -37,7 +40,7 @@ async function loadStudentSteps(me: Profile): Promise<Step[]> {
   // A student only sees their own project.
   const project = projects[0] ?? null
 
-  const [settings, requests, versions, invitations, lastMessages, defenses, slots] =
+  const [settings, requests, versions, invitations, lastMessages, defenses, slots, results] =
     await Promise.all([
       getSettings(),
       listRequests(),
@@ -46,6 +49,7 @@ async function loadStudentSteps(me: Profile): Promise<Step[]> {
       listLastMessages(),
       listDefenses(),
       listSlots(),
+      listResults(),
     ])
   return studentSteps({
     me,
@@ -57,11 +61,12 @@ async function loadStudentSteps(me: Profile): Promise<Step[]> {
     lastMessages,
     defenses,
     slots,
+    results,
   })
 }
 
 async function loadProfessorData(me: Profile): Promise<ProfessorData> {
-  const [themes, requests, invitations, projects, lastMessages, slots, availableSlots] =
+  const [themes, requests, invitations, projects, lastMessages, slots, results, availableSlots] =
     await Promise.all([
       listThemes(),
       listRequests(),
@@ -69,7 +74,18 @@ async function loadProfessorData(me: Profile): Promise<ProfessorData> {
       listProjects(),
       listLastMessages(),
       listSlots(),
+      listResults(),
       listAvailableSlots(me.id),
     ])
-  return { me, themes, requests, invitations, projects, lastMessages, slots, availableSlots }
+  return {
+    me,
+    themes,
+    requests,
+    invitations,
+    projects,
+    lastMessages,
+    slots,
+    results,
+    availableSlots,
+  }
 }

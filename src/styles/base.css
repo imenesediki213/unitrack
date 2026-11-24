@@ -566,7 +566,7 @@ label > textarea {
   text-transform: uppercase;
 }
 
-.defense button {
+.defense button:not(.primary) {
   background: var(--paper-raised);
 }
 

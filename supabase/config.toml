@@ -11,6 +11,13 @@ sql_paths = ["./seed.sql"]
 [realtime]
 enabled = false
 
+# The demo reports are uploaded by "supabase db reset". The bucket itself comes from a migration.
+[storage.buckets.reports]
+public = false
+file_size_limit = "20MiB"
+allowed_mime_types = ["application/pdf"]
+objects_path = "./demo-reports"
+
 [auth]
 site_url = "http://localhost:5173"
 minimum_password_length = 8

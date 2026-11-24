@@ -11,6 +11,7 @@ import { PlanningPage } from './planning/PlanningPage'
 import { SetupPage } from './planning/SetupPage'
 import { ProjectListPage } from './projects/ProjectListPage'
 import { ProjectPage, StudentHomePage } from './projects/ProjectPage'
+import { ResultsPage } from './results/ResultsPage'
 import { ThemesPage } from './themes/ThemesPage'
 
 const router = createBrowserRouter([
@@ -34,6 +35,14 @@ const router = createBrowserRouter([
         element: (
           <RequireRole roles={['supervisor', 'admin']}>
             <JuriesPage />
+          </RequireRole>
+        ),
+      },
+      {
+        path: '/results',
+        element: (
+          <RequireRole roles={['admin']}>
+            <ResultsPage />
           </RequireRole>
         ),
       },

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDay, formatList, formatTime } from './format'
+import { formatDay, formatList, formatMark, formatTime } from './format'
 import { messages, parseLanguage } from './language'
 
 describe('language', () => {
@@ -23,6 +23,11 @@ describe('formats', () => {
 
   it('drops the seconds', () => {
     expect(formatTime('09:30:00')).toBe('09:30')
+  })
+
+  it('writes a mark', () => {
+    expect(formatMark('fr', 16.5)).toBe('16,5/20')
+    expect(formatMark('en', 16.5)).toBe('16.5/20')
   })
 
   it('joins a list', () => {

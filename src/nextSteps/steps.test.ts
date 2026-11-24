@@ -33,9 +33,11 @@ const settings = {
   themes_open: true,
   jury_open: true,
   report_deadline: null,
+  results_published: false,
 }
 
 const slots = [{ id: 'slot', day: '2027-06-14', start_time: '09:00', end_time: '10:00' }]
+const results = [{ project_id: 'project', mark: 15, remarks: null }]
 const defenses = [{ project_id: 'project', slot_id: 'slot', room_id: 'room' }]
 
 function studentTypes(changes: Partial<StudentData>) {
@@ -49,6 +51,7 @@ function studentTypes(changes: Partial<StudentData>) {
     lastMessages: [],
     defenses: [],
     slots,
+    results: [],
     ...changes,
   })
   return steps.map(({ type }) => type)
@@ -77,6 +80,7 @@ describe('studentSteps', () => {
     expect(studentTypes({ project: project('approved') })).toEqual(['waitDefense'])
     expect(studentTypes({ project: project('approved'), defenses })).toEqual(['prepareDefense'])
     expect(studentTypes({ project: project('defended') })).toEqual(['finished'])
+    expect(studentTypes({ project: project('defended'), results })).toEqual(['readResult'])
   })
 
   it('asks for a jury until enough people are invited', () => {
@@ -120,6 +124,8 @@ const nothing: AdminData = {
   projects: [],
   lastMessages: [],
   slots,
+  results: [],
+  settings,
   availableSlots: new Set(),
   accounts: [],
   studentsWithoutProject: 0,
@@ -146,6 +152,14 @@ describe('professorSteps', () => {
     ])
   })
 
+  it('asks the president for the result, once', () => {
+    const jury = [{ role: 'president' as const, person: professor }]
+    const data = { ...nothing, projects: [project('defended', { supervisor: student, jury })] }
+
+    expect(professorSteps(data).map(({ type }) => type)).toEqual(['enterResult'])
+    expect(professorSteps({ ...data, results })).toEqual([])
+  })
+
   it('leaves out the projects of colleagues', () => {
     const colleague = { id: 'colleague', full_name: '' }
     const projects = [project('submitted', { supervisor: colleague })]
@@ -161,6 +175,12 @@ describe('adminSteps', () => {
     expect(adminSteps({ ...data, today: '2027-06-15' })).toEqual([
       { type: 'markDefended', count: 1 },
     ])
+  })
+
+  it('asks to publish the results until they are', () => {
+    expect(adminSteps({ ...nothing, results })).toEqual([{ type: 'publishResults', count: 1 }])
+    const published = { ...settings, results_published: true }
+    expect(adminSteps({ ...nothing, results, settings: published })).toEqual([])
   })
 
   it('counts approved projects without a slot', () => {

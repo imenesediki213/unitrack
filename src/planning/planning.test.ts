@@ -62,6 +62,7 @@ const data: PlanningData = {
     themes_open: false,
     jury_open: false,
     report_deadline: null,
+    results_published: false,
   },
 }
 

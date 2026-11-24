@@ -9,6 +9,7 @@ import type { Project } from '../lib/types'
 import { useLanguage } from '../messages/LanguageContext'
 import { NextSteps } from '../nextSteps/NextSteps'
 import { DefenseSlot } from '../planning/DefenseSlot'
+import { ResultSection } from '../results/ResultSection'
 import { SentRequests } from '../themes/RequestLists'
 import { listRequests } from '../themes/requests'
 import { deleteProject, getProject, listProjects, updateProject } from './api'
@@ -76,6 +77,7 @@ function ProjectDetails({ project, onChange }: { project: Project; onChange: () 
       {isStudent && <NextSteps refreshKey={String(changes)} />}
       {canEdit && <AdminTools project={project} onChange={handleChange} />}
       <DefenseSlot project={project} onDefended={handleChange} />
+      <ResultSection project={project} onChange={handleChange} />
       <Team project={project} canEdit={canEdit} onChange={handleChange} />
       <ReportSection project={project} onChange={handleChange} />
       {isTeam && <Discussion project={project} onChange={handleChange} />}

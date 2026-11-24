@@ -3,7 +3,7 @@
 
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(168);
+select plan(181);
 
 -- Helpers -------------------------------------------------------------------------------
 
@@ -35,7 +35,8 @@ $$;
 truncate public.profiles, public.rooms, public.time_slots cascade;
 delete from auth.users;
 update public.settings
-set schedule_published = false, themes_open = false, jury_open = false, report_deadline = null;
+set schedule_published = false, themes_open = false, jury_open = false, report_deadline = null,
+  results_published = false;
 
 -- Data: project 1 (alice, supervised by sami) and project 2 (bob, supervised by salma). ----
 
@@ -699,6 +700,54 @@ select pg_temp.login('admin');
 select is_empty('select 1 from public.messages', 'nor does the admin');
 select is((select report_deadline from public.settings), null,
   'a student cannot change the deadline');
+
+-- Results: project 1 is defended, its president is "jury" and salma is an examiner. --------
+
+create function pg_temp.enter_result(project text, mark numeric) returns void language sql as $$
+  insert into public.results (project_id, mark) values (pg_temp.uid(project), mark);
+$$;
+
+select pg_temp.login('salma');
+select throws_ok($$select pg_temp.enter_result('p1', 15)$$, '42501', null,
+  'an examiner does not enter the result');
+select pg_temp.login('sami');
+select throws_ok($$select pg_temp.enter_result('p1', 15)$$, '42501', null,
+  'nor does the supervisor');
+select pg_temp.login('admin');
+select throws_ok($$select pg_temp.enter_result('p1', 15)$$, '42501', null, 'nor does the admin');
+select pg_temp.login('alice');
+select throws_ok($$select pg_temp.enter_result('p1', 20)$$, '42501', null,
+  'and certainly not the student');
+
+select pg_temp.login('jury');
+select throws_ok($$select pg_temp.enter_result('p1', 21)$$, '23514', null,
+  'a mark is out of 20');
+select lives_ok($$select pg_temp.enter_result('p1', 14)$$, 'the president enters the result');
+update public.results set mark = 15;
+select is((select mark from public.results), 15::numeric, 'and corrects it');
+
+select pg_temp.login('salma');
+update public.results set mark = 5;
+select is((select mark from public.results), 15::numeric,
+  'the rest of the jury reads it but cannot change it');
+
+select pg_temp.login('alice');
+select is_empty('select 1 from public.results', 'the student does not see it before publication');
+update public.settings set results_published = true;
+
+select pg_temp.login('admin');
+select is((select results_published from public.settings), false,
+  'a student cannot publish the results');
+update public.settings set results_published = true;
+
+select pg_temp.login('alice');
+select is((select mark from public.results), 15::numeric, 'the student sees the published result');
+select pg_temp.login('bob');
+select is_empty('select 1 from public.results', 'other students do not');
+
+select pg_temp.login('jury');
+select throws_ok('update public.results set mark = 16', 'P0001', 'results_published',
+  'a published result cannot change');
 
 -- Visitors ------------------------------------------------------------------------------
 

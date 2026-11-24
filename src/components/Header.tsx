@@ -54,6 +54,7 @@ export function Header() {
           <NavLink to="/themes">{t.nav.themes}</NavLink>
           <NavLink to="/projects">{t.nav.projects}</NavLink>
           <NavLink to="/juries">{t.nav.juries}</NavLink>
+          <NavLink to="/results">{t.nav.results}</NavLink>
           <NavLink to="/people">{t.nav.people}</NavLink>
           <NavLink to="/setup">{t.nav.setup}</NavLink>
           <NavLink to="/availability">{t.nav.availability}</NavLink>

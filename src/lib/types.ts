@@ -85,6 +85,13 @@ export interface JuryLoad {
   waiting: number
 }
 
+export interface Result {
+  project_id: string
+  /** Out of 20. */
+  mark: number
+  remarks: string | null
+}
+
 export interface Message {
   id: string
   body: string
@@ -136,4 +143,5 @@ export interface Settings {
   jury_open: boolean
   /** The moment when a report becomes late. */
   report_deadline: string | null
+  results_published: boolean
 }
