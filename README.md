@@ -3,6 +3,8 @@
 UniTrack helps a university department run its final-year projects (PFE, Master's theses), from
 the choice of a theme to the mark, and build the defense schedule.
 
+![Demo: the puzzle of the main page, night mode, then the schedule: generate it, create a conflict and resolve it](docs/screenshots/demo.gif)
+
 **Status:** working, not deployed and not used by a real department. It was checked on a local
 Supabase stack (PostgreSQL, Auth, Storage), but not on a hosted project.
 
@@ -44,7 +46,27 @@ a room used twice, a jury member who is not available.
 
 ## Screenshots
 
-To be added.
+The people and projects shown are fictional.
+
+**Planning board:** a conflict is explained as soon as it appears, and blocks saving.
+
+![Planning board with a card in conflict and the explanation beside it](docs/screenshots/planning-conflict.png)
+
+**Night mode:** a schedule just generated.
+
+![Planning board in night mode, without conflicts](docs/screenshots/planning-night.png)
+
+**Student project (in French):** progress, what to do next, and jury invitations.
+
+![Project page of a student with the status drawn as a growing stem](docs/screenshots/student-project.png)
+
+**Themes:** a student's requests and the catalogue.
+
+![Theme catalogue with a pending and a refused request](docs/screenshots/themes.png)
+
+| Main page | Phone |
+|---|---|
+| ![Main page with a small scheduling puzzle](docs/screenshots/main-page.png) | <img src="docs/screenshots/phone.png" alt="Project page on a phone, in night mode" width="240"> |
 
 ## Stack
 
